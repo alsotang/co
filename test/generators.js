@@ -14,27 +14,27 @@ function *work() {
 }
 
 describe('co(*)', function(){
-  describe('with a generator function', function(){
+  describe('with a generator', function(){
     it('should wrap with co()', function(){
       return co(function *(){
-        var a = yield work;
-        var b = yield work;
-        var c = yield work;
+        var a = yield work();
+        var b = yield work();
+        var c = yield work();
 
         assert('yay' == a);
         assert('yay' == b);
         assert('yay' == c);
 
-        var res = yield [work, work, work];
+        var res = yield [work(), work(), work()];
         assert.deepEqual(['yay', 'yay', 'yay'], res);
       });
     })
 
     it('should catch errors', function(){
       return co(function *(){
-        yield function *(){
+        yield (function *(){
           throw new Error('boom');
-        };
+        })();
       }).then(function () {
         throw new Error('wtf')
       }, function (err) {
